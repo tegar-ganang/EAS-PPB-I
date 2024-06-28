@@ -1,4 +1,8 @@
 package com.example.myapplication.models
 
-class Product {
-}
+data class Product(
+    val imageRes: Int,
+    val title: String,
+    val price: String,
+    val rating: Float
+)
