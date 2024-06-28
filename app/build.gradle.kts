@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.androidx.material3)
     //noinspection UseTomlInstead
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation(libs.androidx.material3.android) // Fixed dependency line with semicolon
+//    implementation(libs.androidx.material3.android) // Fixed dependency line with semicolon
 
 
     testImplementation(libs.junit)

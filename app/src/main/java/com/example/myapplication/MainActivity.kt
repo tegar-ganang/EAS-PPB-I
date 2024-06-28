@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     composable("login") { LoginScreen(navController) }
                     composable("signup") { SignupScreen(navController) }
                     composable("product") { ProductScreen(navController) }
+                    composable("profile") { ProfileScreen(navController) }
                 }
             }
         }
@@ -59,7 +60,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
-        delay(5000) // 5 seconds delay
+        delay(3000)
         navController.navigate("login")
     }
     Box(
@@ -235,22 +236,16 @@ fun ProductScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                            contentDescription = "Logo",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(8.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Alfamind")
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.logoalfa),
+                        contentDescription = "Logo",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(8.dp)
+                    )
                 },
                 actions = {
-                    IconButton(onClick = { /* handle user icon click */ }) {
+                    IconButton(onClick = { navController.navigate("profile") }) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "User Icon"
@@ -271,24 +266,37 @@ fun ProductScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            Text(
-                text = "Halo, User!",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
-            )
-            Text(
-                text = "Selamat datang di Alfamind",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Text(
-                text = "Selamat Berbelanja",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-            )
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.mascot),
+                    contentDescription = "Mascot",
+                    modifier = Modifier.size(160.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column {
+                    Text(
+                        text = "Halo, User!",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Text(
+                        text = "Selamat datang di Alfamind",
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                    Text(
+                        text = "Selamat Berbelanja",
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
             ProductGrid(products = sampleProducts, onProductClick = {
-                // handle product click
+
             })
         }
     }
@@ -296,9 +304,16 @@ fun ProductScreen(navController: NavHostController) {
 
 @Composable
 fun ProductGrid(products: List<Product>, onProductClick: (Product) -> Unit) {
-    Column {
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
         products.chunked(2).forEach { rowItems ->
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 rowItems.forEach { product ->
                     ProductCard(product = product, onClick = { onProductClick(product) })
                 }
@@ -309,23 +324,22 @@ fun ProductGrid(products: List<Product>, onProductClick: (Product) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductCard(product: Product, onClick: () -> Unit) {
+fun ProductCard(product: Product, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .padding(8.dp)
-            .clickable(onClick = onClick)
-            .fillMaxWidth(),
+        modifier = modifier
+            .padding(4.dp)
+            .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
             Image(
                 painter = painterResource(id = product.imageRes),
                 contentDescription = product.title,
-                modifier = Modifier.size(128.dp)
+                modifier = Modifier.size(190.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -336,6 +350,91 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                 Text(text = product.rating.toString(), color = Color.Gray, fontSize = 14.sp)
                 // Add a star icon or rating bar if desired
             }
+            Button(
+                onClick = { /* TODO */ },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007BFF)),
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Text(text = "Beli", color = Color.White)
+            }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Red
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Image(
+                painter = painterResource(id = R.drawable.profil_picture),
+                contentDescription = "Profile Picture",
+                modifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Owner Lolly Cafe",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    ProfileItem(label = "Nama", value = "Lolly Unyu")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ProfileItem(label = "Email", value = "ownerlolly@gmail.com")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ProfileItem(label = "Nomor Telepon", value = "088008800888")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ProfileItem(label = "Nama Toko", value = "Lolly Cafe")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ProfileItem(label = "Alamat", value = "Jalan Teknik Kimia")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileItem(label: String, value: String) {
+    Column {
+        Text(
+            text = label,
+            color = Color.Blue,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp
+        )
+        Text(
+            text = value,
+            color = Color.Black,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
     }
 }
